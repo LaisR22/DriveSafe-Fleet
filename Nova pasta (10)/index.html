@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FleetSafe | Gestão Inteligente de Frotas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --accent: #0ea5e9;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --background: #0f172a;
+            --surface: #1e293b;
+            --surface-light: #334155;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --glass: rgba(30, 41, 59, 0.7);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--background);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--surface-light);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary);
+        }
+
+        
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: var(--glass);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .logo i {
+            color: var(--primary);
+            font-size: 1.75rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-cta {
+            background: var(--primary);
+            color: white;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .nav-cta:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+       
+        .hero {
+            padding: 10rem 0 6rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -10%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, transparent 70%);
+            z-index: -1;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+            max-width: 540px;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .hero-image {
+            position: relative;
+        }
+
+        .hero-image img {
+            width: 100%;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border);
+        }
+
+        .floating-card {
+            position: absolute;
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .section {
+            padding: 8rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-title p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--surface);
+            padding: 2.5rem;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            background: linear-gradient(180deg, var(--surface) 0%, rgba(37, 99, 235, 0.05) 100%);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(37, 99, 235, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        
+        .dashboard-container {
+            background: var(--surface);
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .dashboard-header {
+            padding: 1.5rem 2rem;
+            background: rgba(255,255,255,0.02);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dashboard-body {
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+        }
+
+        .monitor-view {
+            background: #000;
+            border-radius: 16px;
+            height: 400px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .monitor-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .badge-safe { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .badge-warning { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .badge-danger { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+
+        .controls-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .control-group {
+            background: var(--surface-light);
+            padding: 1.5rem;
+            border-radius: 16px;
+        }
+
+        .control-group h4 {
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .sim-btn {
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.05);
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .sim-btn:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .sim-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .telemetry-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .telemetry-item {
+            background: rgba(0,0,0,0.2);
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .telemetry-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .telemetry-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            font-family: monospace;
+        }
+
+       
+        .camera-feed {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.6;
+        }
+
+        .face-mesh {
+            position: absolute;
+            inset: 0;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            width: 200px;
+            height: 200px;
+            margin: auto;
+            box-shadow: 0 0 0 4000px rgba(0,0,0,0.5);
+            pointer-events: none;
+        }
+
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: var(--primary);
+            top: 0;
+            left: 0;
+            box-shadow: 0 0 15px var(--primary);
+            animation: scan 3s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+
+        /* Footer */
+        footer {
+            padding: 4rem 0;
+            border-top: 1px solid var(--border);
+            background: var(--background);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 4rem;
+            margin-bottom: 4rem;
+        }
+
+        .footer-info p {
+            color: var(--text-muted);
+            margin-top: 1.5rem;
+            max-width: 300px;
+        }
+
+        .footer-links h4 {
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero-grid, .features-grid, .dashboard-body {
+                grid-template-columns: 1fr;
+            }
+            .hero-content h1 { font-size: 3rem; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links, .nav-cta { display: none; }
+            .hero { padding-top: 8rem; }
+            .footer-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    
+    <header id="header">
+        <div class="container">
+            <nav>
+                <a href="#" class="logo">
+                    <i class="fas fa-shield-truck"></i>
+                    <span>FleetSafe </span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="#features">Tecnologia</a></li>
+                    <li><a href="#simulator">Simulador</a></li>
+                    <li><a href="#benefits">Benefícios</a></li>
+                    <li><a href="#contact">Contato</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-grid">
+                <div class="hero-content">
+                    <h1>Segurança de Elite para sua Frota</h1>
+                    <p>Proteja seus motoristas e ativos com IA de última geração. Detecção passiva de álcool e fadiga em tempo real, sem interrupções na jornada.</p>
+                    <div class="hero-btns">
+                        <button class="nav-cta" onclick="document.getElementById('simulator').scrollIntoView({behavior:'smooth'})">Ver Simulador</button>
+                        <button class="sim-btn" style="padding: 0.6rem 1.5rem;">Saiba Mais</button>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="https://images.unsplash.com/photo-1519003722824-194d4455a60c?auto=format&fit=crop&q=80&w=1000" alt="Caminhão moderno">
+                    <div class="floating-card" style="bottom: 20px; left: -20px;">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div class="feature-icon" style="margin-bottom: 0; width: 40px; height: 40px; font-size: 1rem;">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div>
+                                <div style="font-weight: 700; font-size: 0.9rem;">Motorista Ativo</div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">Monitoramento 100%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="section" id="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>Tecnologia de Prevenção Ativa</h2>
+                <p>Nossa solução utiliza sensores multimodais para garantir que cada quilômetro seja percorrido com máxima segurança.</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-eye"></i></div>
+                    <h3>Detecção de Fadiga</h3>
+                    <p>Algoritmos de visão computacional que analisam padrões de piscada e inclinação da cabeça para identificar sinais precoces de sono.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-wind"></i></div>
+                    <h3>Análise de Hálito Passiva</h3>
+                    <p>Sensores de alta sensibilidade integrados à cabine que detectam moléculas de etanol no ar sem necessidade de sopro direto.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="fas fa-brain"></i></div>
+                    <h3>IA de Comportamento</h3>
+                    <p>Monitoramento de padrões de direção, como correções bruscas de faixa, que indicam possível comprometimento do motorista.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="simulator" style="background: rgba(255,255,255,0.02);">
+        <div class="container">
+            <div class="section-title">
+                <h2>Painel de Controle em Tempo Real</h2>
+                <p>Experimente como nossa IA processa os dados e protege a operação da sua frota.</p>
+            </div>
+
+            <div class="dashboard-container">
+                <div class="dashboard-header">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <i class="fas fa-circle" style="color: var(--success); font-size: 0.5rem;"></i>
+                        <span style="font-weight: 600; font-size: 0.9rem;">VEÍCULO: SCANIA R500 - PLACA ABC-1234</span>
+                    </div>
+                    <div id="current-time" style="font-family: monospace; color: var(--text-muted);">14:35:22</div>
+                </div>
+                <div class="dashboard-body">
+                    <div class="monitor-view">
+                        <div class="monitor-overlay">
+                            <div id="main-status" class="status-badge badge-safe">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Sistema Operacional</span>
+                            </div>
+                        </div>
+                        <div class="scan-line"></div>
+                        <div class="face-mesh" id="face-mesh"></div>
+                        <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=600" class="camera-feed" alt="Driver Feed">
+                        
+                        <div style="position: absolute; bottom: 20px; right: 20px; text-align: right;">
+                            <div style="font-size: 0.7rem; color: var(--primary); font-weight: 800;">AI ANALYSIS ACTIVE</div>
+                            <div id="ai-log" style="font-family: monospace; font-size: 0.6rem; color: #0f0; max-width: 200px;">
+                                > Scanning facial landmarks...<br>
+                                > Ethanol sensors: 0.00mg/L<br>
+                                > Attention level: 98%
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="controls-panel">
+                        <div class="control-group">
+                            <h4>Simular Cenários</h4>
+                            <div class="btn-group">
+                                <button class="sim-btn active" onclick="setScenario('normal', this)">Normal</button>
+                                <button class="sim-btn" onclick="setScenario('sleepy', this)">Fadiga</button>
+                                <button class="sim-btn" onclick="setScenario('alcohol', this)">Álcool</button>
+                                <button class="sim-btn" onclick="setScenario('danger', this)">Crítico</button>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <h4>Telemetria</h4>
+                            <div class="telemetry-grid">
+                                <div class="telemetry-item">
+                                    <span class="telemetry-label">Nível Álcool</span>
+                                    <span class="telemetry-value" id="val-alcohol">0.00</span>
+                                </div>
+                                <div class="telemetry-item">
+                                    <span class="telemetry-label">Alerta Sono</span>
+                                    <span class="telemetry-value" id="val-fatigue">2%</span>
+                                </div>
+                                <div class="telemetry-item">
+                                    <span class="telemetry-label">Atenção</span>
+                                    <span class="telemetry-value" id="val-attention">98%</span>
+                                </div>
+                                <div class="telemetry-item">
+                                    <span class="telemetry-label">RPM</span>
+                                    <span class="telemetry-value">1250</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="nav-cta" style="width: 100%; padding: 1rem;" onclick="alert('Relatório de segurança gerado e enviado para a central.')">
+                            Gerar Relatório de Incidente
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-info">
+                    <a href="#" class="logo">
+                        <i class="fas fa-shield-truck"></i>
+                        <span>FleetSafe AI</span>
+                    </a>
+                    <p>Líder global em tecnologia de segurança passiva para frotas pesadas e logística de alto valor.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Produto</h4>
+                    <ul>
+                        <li><a href="#">Como funciona</a></li>
+                        <li><a href="#">Hardware</a></li>
+                        <li><a href="#">Software Dash</a></li>
+                        <li><a href="#">Integrações</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Empresa</h4>
+                    <ul>
+                        <li><a href="#">Sobre nós</a></li>
+                        <li><a href="#">Carreiras</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Contato</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Privacidade</a></li>
+                        <li><a href="#">Termos de Uso</a></li>
+                        <li><a href="#">Compliance</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 FleetSafe AI Technologies. Todos os direitos reservados.</p>
+                <div style="display: flex; gap: 1.5rem;">
+                    <i class="fab fa-linkedin"></i>
+                    <i class="fab fa-twitter"></i>
+                    <i class="fab fa-instagram"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('current-time').textContent = now.toLocaleTimeString('pt-BR');
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        
+        const scenarios = {
+            normal: {
+                status: 'Sistema Operacional',
+                badge: 'badge-safe',
+                icon: 'fa-check-circle',
+                alcohol: '0.00',
+                fatigue: '2%',
+                attention: '98%',
+                log: '> Scanning facial landmarks...<br>> Ethanol sensors: 0.00mg/L<br>> Attention level: 98%',
+                color: '#2563eb'
+            },
+            sleepy: {
+                status: 'Alerta de Fadiga',
+                badge: 'badge-warning',
+                icon: 'fa-exclamation-triangle',
+                alcohol: '0.00',
+                fatigue: '65%',
+                attention: '42%',
+                log: '> WARNING: Micro-sleep detected<br>> Pattern: Frequent blinking<br>> Action: Audio alert triggered',
+                color: '#f59e0b'
+            },
+            alcohol: {
+                status: 'Álcool Detectado',
+                badge: 'badge-danger',
+                icon: 'fa-biohazard',
+                alcohol: '0.34',
+                fatigue: '12%',
+                attention: '75%',
+                log: '> ALERT: Ethanol detected<br>> Level: 0.34mg/L (Above limit)<br>> Action: Ignition lock engaged',
+                color: '#ef4444'
+            },
+            danger: {
+                status: 'Risco Crítico',
+                badge: 'badge-danger',
+                icon: 'fa-skull-crossbones',
+                alcohol: '0.45',
+                fatigue: '88%',
+                attention: '15%',
+                log: '> CRITICAL: Multiple violations<br>> Driver unresponsive<br>> Action: Emergency stop initiated',
+                color: '#ef4444'
+            }
+        };
+
+        function setScenario(type, btn) {
+           
+            document.querySelectorAll('.sim-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const data = scenarios[type];
+            
+            
+            const statusBadge = document.getElementById('main-status');
+            statusBadge.className = 'status-badge ' + data.badge;
+            statusBadge.querySelector('span').textContent = data.status;
+            statusBadge.querySelector('i').className = 'fas ' + data.icon;
+
+            document.getElementById('val-alcohol').textContent = data.alcohol;
+            document.getElementById('val-fatigue').textContent = data.fatigue;
+            document.getElementById('val-attention').textContent = data.attention;
+            document.getElementById('ai-log').innerHTML = data.log;
+            
+            const mesh = document.getElementById('face-mesh');
+            mesh.style.borderColor = data.color;
+            
+            if(type !== 'normal') {
+                mesh.style.animation = 'pulse 1s infinite';
+            } else {
+                mesh.style.animation = 'none';
+            }
+        }
+
+        
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0% { transform: scale(1); opacity: 1; }
+                50% { transform: scale(1.05); opacity: 0.7; }
+                100% { transform: scale(1); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.style.padding = '0.5rem 0';
+                header.style.background = 'rgba(15, 23, 42, 0.9)';
+            } else {
+                header.style.padding = '1rem 0';
+                header.style.background = 'var(--glass)';
+            }
+        });
+    </script>
+</body>
+</html>
