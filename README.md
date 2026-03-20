@@ -56,10 +56,6 @@ O sistema realiza **monitoramento em tempo real** do estado do condutor, detecta
 ## 🛠️ Tecnologias
 
 - HTML5  
-- CSS3  
-- JavaScript  
-- Node.js *(opcional backend)*  
-- OpenCV *(IA / visão computacional)*  
 
 ---
 
